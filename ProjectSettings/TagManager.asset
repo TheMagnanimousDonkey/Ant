@@ -3,7 +3,15 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Ant
+  - RedAnt
+  - EnemyProximity
+  - BlackWeapon
+  - RedWeapon
+  - Weapon
+  - EnemyProximityBlack
+  - EnemyProximityRed
   layers:
   - Default
   - TransparentFX
@@ -16,11 +24,11 @@ TagManager:
   - Aphid
   - Ant
   - Pheromone
-  - 
-  - 
-  - 
-  - 
-  - 
+  - RedAnt
+  - BlackWeapon
+  - EnemyProximityBlack
+  - RedWeapon
+  - EnemyProximityRed
   - 
   - 
   - 
