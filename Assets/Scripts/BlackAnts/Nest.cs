@@ -6,15 +6,17 @@ using UnityEngine.UI;
 
 public class Nest : MonoBehaviour
 {
-    int totalFood = 20;
-    public Text foodText;
-    public GameObject Ant;
-    //public GameObject RedAnt;
+    public GameObject BlackAnt;
+    //public GameObject BlackSoldier;
     private List<Vector2> foodLocations;
+    public Text totalText;
+    public Text foodText;
+    public Text soldierText;
+
     void Start()
     {
         StartCoroutine(SpawnAnt());
-       // StartCoroutine(SpawnRed());
+        ManagerScript.Instance.BlackFoodCount = 20;
         foodLocations = new List<Vector2>();
     }
 
@@ -41,39 +43,18 @@ public class Nest : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(1f);
-            if (totalFood > 0)
+            if (ManagerScript.Instance.BlackFoodCount > 0 && ManagerScript.Instance.RedAntCount < 100)
             {
-                Instantiate(Ant, transform.position, transform.rotation);
-                totalFood--;
-                foodText.text = totalFood.ToString();
-
+                Instantiate(BlackAnt, transform.position, transform.rotation);
+                ManagerScript.Instance.BlackAntCount++;
+                ManagerScript.Instance.BlackFoodCount--;
             }
-               
+            foodText.text = ManagerScript.Instance.BlackFoodCount.ToString();
+            totalText.text = ManagerScript.Instance.BlackAntCount.ToString();
+            soldierText.text = ManagerScript.Instance.BlackSoldierCount.ToString();
 
         }
 
     }
-    IEnumerator SpawnSoilder()
-    {
-       
-            yield return new WaitForSeconds(100f);
 
-           // Instantiate(RedAnt, new Vector3(1.67f, -1.64f, 0), transform.rotation);
-            
-
-        
-
-    }
-
-    public void handleFood(bool food)
-    {
-        if (food)
-        {
-            totalFood++;
-        }
-        else
-        {
-            totalFood--;
-        }
-    }
 }

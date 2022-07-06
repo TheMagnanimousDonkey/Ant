@@ -13,10 +13,10 @@ public class RedSoldier : MonoBehaviour
     Vector2 position;
     Vector2 velocity;
     Vector2 desiredDirection;
-    public int maxHealth = 200;
+    public int maxHealth = 100;
     public Vector2 enemyLocation;
     public int goTo = 0;
-
+    public GameObject isItAlive;
 
     Rigidbody2D rb;
 
@@ -24,6 +24,14 @@ public class RedSoldier : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
 
+    }
+
+    private void FixedUpdate()
+    {
+        if (isItAlive == null)
+        {
+            goTo = 0;
+        }
     }
     void Update()
     {
@@ -93,9 +101,18 @@ public class RedSoldier : MonoBehaviour
                     }
                 }
                 attacker.isFighting = false;
+                ManagerScript.Instance.RedSoldierCount--;
                 Destroy(this.gameObject);
             }
         }
     }
-   
+    void OnTriggerExit(Collider col)
+    {
+        BlackWeapon bw = col.GetComponent<BlackWeapon>();
+
+        goTo = 0;
+
+
+    }
+
 }

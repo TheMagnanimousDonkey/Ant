@@ -14,6 +14,7 @@ public class EnemyProximityBlack : MonoBehaviour
             parent.goTo = 3;
             parent.enemyLocation = col.transform.position;
             parent.isFighting = true;
+            parent.isItAlive = col.gameObject;
 
         }
 

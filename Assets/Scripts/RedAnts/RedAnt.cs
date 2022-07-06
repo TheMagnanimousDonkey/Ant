@@ -7,10 +7,9 @@ public class RedAnt : MonoBehaviour
     public float maxSpeed = 2;
     public float steerStrength = 2;
     public float wanderStrength = 1;
-    public float rotationSpeed = 720;
     public bool isCarryingFood = false;
     public bool isFighting = false;
-    Vector2 nestLocation = new Vector2(3.47f, -0.48f);
+    Vector2 nestLocation;
     Vector2 position;
     Vector2 velocity;
     Vector2 desiredDirection;
@@ -20,8 +19,7 @@ public class RedAnt : MonoBehaviour
     public Vector2 enemyLocation;
     public bool wanderOnly = false;
     public GameObject isItAlive;
-
-
+    
     Rigidbody2D rb;
 
     private void Start()
@@ -30,8 +28,7 @@ public class RedAnt : MonoBehaviour
         this.gameObject.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
 
     }
-
-    private void FixedUpdate()
+     private void FixedUpdate()
     {
         if (isItAlive == null)
         {
@@ -75,15 +72,13 @@ public class RedAnt : MonoBehaviour
                 position = Vector2.MoveTowards(transform.position, enemyLocation, (maxSpeed * 2) * Time.deltaTime);
                 rb.MovePosition(position);
                 break;
-
         }
-
-    }
+     }
 
     private void OnTriggerStay2D(Collider2D col)
     {
 
-        Nest nest = col.GetComponent<Nest>();
+
         BlackWeapon weapon = col.GetComponent<BlackWeapon>();
 
         if (weapon != null)
@@ -91,60 +86,48 @@ public class RedAnt : MonoBehaviour
             maxHealth = maxHealth - weapon.weaponStrength;
             if (maxHealth <= 0)
             {
-                var attacker = col.gameObject.transform.parent.GetComponent<Ant>();
-                if (attacker.foodLocation == new Vector2(0, 0))
+
+                if (weapon.gameObject.transform.name == "Ant(Clone)")
                 {
-                    attacker.goTo = 0;
+                    ManagerScript.Instance.RedAntCount--;
+                    var blackAnt = col.gameObject.transform.parent.GetComponent<RedAnt>();
+                    if (blackAnt.wanderOnly == false)
+                    {
+                        if (blackAnt.foodLocation == new Vector2(0, 0))
+                        {
+                            blackAnt.goTo = 0;
+                        }
+                        else if (blackAnt.foodLocation != new Vector2(0, 0))
+                        {
+                            if (blackAnt.isCarryingFood)
+                            {
+                                blackAnt.goTo = 2;
+                            }
+                            else
+                            {
+                                blackAnt.goTo = 1;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        blackAnt.goTo = 0;
+                    }
+                    blackAnt.isFighting = false;
                 }
-                else if(attacker.foodLocation != new Vector2(0, 0))
+                else if (weapon.gameObject.transform.name == "BlackSoldier(Clone)")
                 {
-                    if (attacker.isCarryingFood)
-                    {
-                        attacker.goTo = 2;
-                    }
-                    else 
-                    {
-                        attacker.goTo = 1;
-                    }
+                    ManagerScript.Instance.RedSoldierCount--;
+                    var blackSoldier = col.gameObject.transform.parent.GetComponent<BlackSoldier>();
+                    blackSoldier.goTo = 0;
                 }
-                attacker.isFighting = false;
+
+
+
                 Destroy(this.gameObject);
-            }
-        }
-        if (wanderOnly == false)
-        {
-            if (nest != null)
-            {
-
-                rb.velocity = Vector2.zero;
-                rb.angularVelocity = 0f;
-                if (this.gameObject.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled == true)
-                {
-                    nest.handleFood(true);
-                }
-                this.gameObject.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
-                if (foodLocation != new Vector2(0, 0))
-                {
-                    nest.SetFoodLocation(foodLocation);
-                    foodLocation = nest.GetFoodLocation();
-                    isCarryingFood = false;
-                    goTo = 1;
-                }
-                else
-                {
-                    foodLocation = nest.GetFoodLocation();
-                    isCarryingFood = false;
-                    if (foodLocation != new Vector2(0, 0))
-                    {
-                        goTo = 1;
-                    }
-                    goTo = 0;
-                }
 
             }
         }
-        
-
     }
 
 
@@ -193,9 +176,13 @@ public class RedAnt : MonoBehaviour
 
                 rb.velocity = Vector2.zero;
                 rb.angularVelocity = 0f;
+                if (foodLocation == new Vector2(0, 0))
+                {
+                    nestLocation = nest.transform.position;
+                }
                 if (this.gameObject.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled == true)
                 {
-                    nest.handleFood(true);
+                    ManagerScript.Instance.RedFoodCount++;
                 }
                 this.gameObject.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
                 if (foodLocation != new Vector2(0, 0))
@@ -223,7 +210,7 @@ public class RedAnt : MonoBehaviour
     void OnTriggerExit(Collider col)
     {
         BlackWeapon bw = col.GetComponent<BlackWeapon>();
-
+        if(bw != null)
         returnToWhatItWasDoing();
 
         
@@ -248,5 +235,6 @@ public class RedAnt : MonoBehaviour
         }
         isFighting = false;
     }
+
 
 }

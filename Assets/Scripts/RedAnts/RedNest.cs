@@ -5,13 +5,18 @@ using UnityEngine.UI;
 
 public class RedNest : MonoBehaviour
 {
-    int totalFood = 20;
-    public GameObject foodText;
+    
+    
+    
     public GameObject RedAnt;
     public GameObject RedSoldier;
     private List<Vector2> foodLocations;
+    public Text totalText;
+    public Text foodText;
+    public Text soldierText;
     void Start()
     {
+        ManagerScript.Instance.RedFoodCount = 20;
         StartCoroutine(SpawnAnt());
       //  StartCoroutine(SpawnRed());
         foodLocations = new List<Vector2>();
@@ -41,44 +46,32 @@ public class RedNest : MonoBehaviour
         {
             yield return new WaitForSeconds(1f);
 
-            if (totalFood > 30)
-            {
-                Instantiate(RedSoldier, transform.position, transform.rotation);
-                totalFood = totalFood - 30;
-                foodText.gameObject.transform.GetChild(1).GetComponent<Text>().text = totalFood.ToString();
 
-            }
-            else if (totalFood > 0)
+
+            if (ManagerScript.Instance.RedFoodCount > 0 && ManagerScript.Instance.RedAntCount < 50)
             {
-               // var wanderer = RedAnt.gameObject.transform.GetComponent<RedAnt>();
-               // wanderer.wanderOnly = false;
                 Instantiate(RedAnt, transform.position, transform.rotation);
-                totalFood--;
-                foodText.gameObject.transform.GetChild(1).GetComponent<Text>().text = totalFood.ToString();
+                ManagerScript.Instance.RedAntCount++;
+                ManagerScript.Instance.RedFoodCount--;
+
+
 
             }
+            else if (ManagerScript.Instance.RedFoodCount > 30 && ManagerScript.Instance.RedSoldierCount < 10)
+            {
 
+                Instantiate(RedSoldier, transform.position, transform.rotation);
+                ManagerScript.Instance.RedSoldierCount++;
+                ManagerScript.Instance.RedFoodCount = ManagerScript.Instance.RedFoodCount - 30;
+
+
+            }
+            foodText.text = ManagerScript.Instance.RedFoodCount.ToString();
+            totalText.text = ManagerScript.Instance.RedAntCount.ToString();
+            soldierText.text = ManagerScript.Instance.RedSoldierCount.ToString();
 
         }
 
     }
-    IEnumerator SpawnRed()
-    {
 
-        yield return new WaitForSeconds(100f);
-
-        Instantiate(RedAnt, new Vector3(1.67f, -1.64f, 0), transform.rotation);
-
-    }
-    public void handleFood(bool food)
-    {
-        if (food)
-        {
-            totalFood++;
-        }
-        else
-        {
-            totalFood--;
-        }
-    }
 }

@@ -24,7 +24,8 @@ public class EnemyProximityRed : MonoBehaviour
                 var parent = this.gameObject.transform.parent.GetComponent<RedSoldier>();
                 parent.goTo = 3;
                 parent.enemyLocation = col.transform.position;
-               
+                parent.isItAlive = col.gameObject;
+
             }
 
 

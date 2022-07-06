@@ -249,7 +249,7 @@ GameObject:
   - component: {fileID: 7455208692908819058}
   - component: {fileID: 5193207781698084040}
   m_Layer: 9
-  m_Name: ant
+  m_Name: Ant
   m_TagString: Ant
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
