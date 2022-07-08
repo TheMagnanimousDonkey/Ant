@@ -4,15 +4,14 @@ using UnityEngine;
 
 public class Aphid : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public int totalFood = 10;
 
-    // Update is called once per frame
-    void Update()
+    public void Update()
     {
-        
+        if (totalFood <= 0)
+        {
+           var getParent = gameObject.GetComponentInParent<Food>();
+           getParent.destroyFood();
+        }
     }
 }

@@ -10,7 +10,8 @@ public class RedNest : MonoBehaviour
     
     public GameObject RedAnt;
     public GameObject RedSoldier;
-    private List<Vector2> foodLocations;
+    public List<Vector2> foodLocations;
+    private List<Vector2> removedfoodLocations;
     public Text totalText;
     public Text foodText;
     public Text soldierText;
@@ -18,15 +19,24 @@ public class RedNest : MonoBehaviour
     {
         ManagerScript.Instance.RedFoodCount = 20;
         StartCoroutine(SpawnAnt());
-      //  StartCoroutine(SpawnRed());
         foodLocations = new List<Vector2>();
+        removedfoodLocations = new List<Vector2>();
     }
 
-    public void SetFoodLocation(Vector2 nest)
+    public void AddFoodLocation(Vector2 nest)
     {
-        if (!foodLocations.Contains(nest))
+        if (!foodLocations.Contains(nest) && !removedfoodLocations.Contains(nest))
         {
             foodLocations.Add(nest);
+        }
+    }
+
+    public void RemoveFoodLocation(Vector2 nest)
+    {
+        if (foodLocations.Contains(nest))
+        {
+            removedfoodLocations.Add(nest);
+            foodLocations.Remove(nest);
         }
     }
 
@@ -48,7 +58,7 @@ public class RedNest : MonoBehaviour
 
 
 
-            if (ManagerScript.Instance.RedFoodCount > 0 && ManagerScript.Instance.RedAntCount < 50)
+            if (ManagerScript.Instance.RedFoodCount > 0 && ManagerScript.Instance.RedAntCount < 70)
             {
                 Instantiate(RedAnt, transform.position, transform.rotation);
                 ManagerScript.Instance.RedAntCount++;
@@ -57,7 +67,7 @@ public class RedNest : MonoBehaviour
 
 
             }
-            else if (ManagerScript.Instance.RedFoodCount > 30 && ManagerScript.Instance.RedSoldierCount < 10)
+            else if (ManagerScript.Instance.RedFoodCount > 30 && ManagerScript.Instance.RedSoldierCount < 0)
             {
 
                 Instantiate(RedSoldier, transform.position, transform.rotation);

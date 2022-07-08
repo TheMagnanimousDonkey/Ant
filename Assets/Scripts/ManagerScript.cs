@@ -12,6 +12,7 @@ public static ManagerScript Instance { get; private set; }
     public int RedFoodCount = 0;
     public int BlackFoodCount = 0;
 
+
     private void Awake()
     {
         if (Instance == null)

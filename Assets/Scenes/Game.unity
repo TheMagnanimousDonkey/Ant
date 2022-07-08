@@ -2413,8 +2413,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b817c13e7f1b3044ab53d6bc1bf07659, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BlackAnt: {fileID: 7455208692908819059, guid: 81a2ece1a7a3a8647b0ebac4df87998a, type: 3}
+  totalText: {fileID: 411080619}
   foodText: {fileID: 814068181}
-  Ant: {fileID: 7455208692908819059, guid: 81a2ece1a7a3a8647b0ebac4df87998a, type: 3}
+  soldierText: {fileID: 1735410535}
 --- !u!58 &841741192
 CircleCollider2D:
   m_ObjectHideFlags: 0

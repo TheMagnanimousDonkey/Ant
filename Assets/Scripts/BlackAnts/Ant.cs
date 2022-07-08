@@ -19,7 +19,8 @@ public class Ant : MonoBehaviour
     public Vector2 enemyLocation;
     public bool wanderOnly = false;
     public GameObject isItAlive;
-    
+    public bool isfoodGone = false;
+
     Rigidbody2D rb;
     
     private void Start()
@@ -89,7 +90,6 @@ public class Ant : MonoBehaviour
                 
                 if (weapon.gameObject.transform.name == "RedAnt(Clone)")
                 {
-                    ManagerScript.Instance.BlackAntCount--;
                     var redAnt = col.gameObject.transform.parent.GetComponent<RedAnt>();
                     if (redAnt.wanderOnly == false)
                     {
@@ -113,17 +113,18 @@ public class Ant : MonoBehaviour
                     {
                         redAnt.goTo = 0;
                     }
+                    
                     redAnt.isFighting = false;
                 }
                 else if (weapon.gameObject.transform.name == "RedSoldier(Clone)")
                 {
-                    ManagerScript.Instance.BlackSoldierCount--;
+                    
                     var redSoldier = col.gameObject.transform.parent.GetComponent<RedSoldier>();
                     redSoldier.goTo = 0;
                 }
- 
-                
-                
+
+
+                ManagerScript.Instance.BlackAntCount--;
                 Destroy(this.gameObject);
             }
         }
@@ -139,42 +140,49 @@ public class Ant : MonoBehaviour
         Aphid aphid = col.GetComponent<Aphid>();
         Nest nest = col.GetComponent<Nest>();
         Ant ant = col.GetComponent<Ant>();
+        DestroyTime foodGone = col.GetComponent<DestroyTime>();
 
-        if (ant != null)
+        if (foodGone != null)
         {
-            if (foodLocation == new Vector2(0, 0) && isFighting == false)
-            {
-                if (ant.foodLocation != new Vector2(0, 0))
-                {
-                    foodLocation = ant.foodLocation;
-                    goTo = 1;
-                }
-            }
+
+            isfoodGone = true;
+            goTo = 2;
         }
-        if (aphid != null)
+        //if (ant != null)
+        //{
+        //    if (foodLocation == new Vector2(0, 0) && isFighting == false)
+        //    {
+        //        if (ant.foodLocation != new Vector2(0, 0))
+        //        {
+        //            foodLocation = ant.foodLocation;
+        //            goTo = 1;
+        //        }
+        //    }
+        //}
+        if (aphid != null && isCarryingFood == false)
         {
             isCarryingFood = true;
-            rb.velocity = Vector2.zero;
-            rb.angularVelocity = 0f;
             this.gameObject.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
+            aphid.totalFood--;
             goTo = 2;
             
         }
 
         if (food != null && this.gameObject.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled == false)
         {
-            rb.velocity = Vector2.zero;
-            rb.angularVelocity = 0f;
             foodLocation = food.transform.position;
-           
             goTo = 1;
         }
 
         if (nest != null)
         {
-            
-            rb.velocity = Vector2.zero;
-            rb.angularVelocity = 0f;
+
+            if (isfoodGone)
+            {
+                nest.RemoveFoodLocation(foodLocation);
+                foodLocation = new Vector2(0, 0);
+                isfoodGone = false;
+            }
             if (foodLocation == new Vector2(0, 0))
             {
                 nestLocation = nest.transform.position;
@@ -186,7 +194,7 @@ public class Ant : MonoBehaviour
             this.gameObject.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
             if (foodLocation != new Vector2(0,0))
             {
-                nest.SetFoodLocation(foodLocation);
+                nest.AddFoodLocation(foodLocation);
                 foodLocation = nest.GetFoodLocation();
                 isCarryingFood = false;
                 goTo = 1; 
@@ -216,7 +224,12 @@ public class Ant : MonoBehaviour
 
     private void returnToWhatItWasDoing()
     {
-        if (foodLocation == new Vector2(0, 0))
+        if (isfoodGone == true)
+        {
+            isfoodGone = true;
+            goTo = 2;
+        }
+        else if (foodLocation == new Vector2(0, 0))
         {
             goTo = 0;
         }

@@ -2,17 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class Food : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public GameObject FoodGonePrefab;
+    public void destroyFood()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        Instantiate(FoodGonePrefab, transform.position, transform.rotation);
+        Destroy(gameObject);
     }
 }

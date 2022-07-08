@@ -9,6 +9,7 @@ public class Nest : MonoBehaviour
     public GameObject BlackAnt;
     //public GameObject BlackSoldier;
     private List<Vector2> foodLocations;
+    private List<Vector2> removedfoodLocations;
     public Text totalText;
     public Text foodText;
     public Text soldierText;
@@ -18,13 +19,23 @@ public class Nest : MonoBehaviour
         StartCoroutine(SpawnAnt());
         ManagerScript.Instance.BlackFoodCount = 20;
         foodLocations = new List<Vector2>();
+        removedfoodLocations = new List<Vector2>();
     }
 
-    public void SetFoodLocation(Vector2 nest)
+    public void AddFoodLocation(Vector2 nest)
     {
-        if (!foodLocations.Contains(nest))
+        if (!foodLocations.Contains(nest) && !removedfoodLocations.Contains(nest))
         {
             foodLocations.Add(nest);
+        }
+    }
+
+    public void RemoveFoodLocation(Vector2 nest)
+    {
+        if (foodLocations.Contains(nest))
+        {
+            removedfoodLocations.Add(nest);
+            foodLocations.Remove(nest);
         }
     }
 
@@ -43,7 +54,7 @@ public class Nest : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(1f);
-            if (ManagerScript.Instance.BlackFoodCount > 0 && ManagerScript.Instance.RedAntCount < 100)
+            if (ManagerScript.Instance.BlackFoodCount > 0 && ManagerScript.Instance.BlackAntCount < 70)
             {
                 Instantiate(BlackAnt, transform.position, transform.rotation);
                 ManagerScript.Instance.BlackAntCount++;

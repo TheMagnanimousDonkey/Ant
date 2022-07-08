@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DestroyTime : MonoBehaviour
 {
-    public int destructionTime = 10;
+    public int destructionTime = 60;
  
     void Update()
     {

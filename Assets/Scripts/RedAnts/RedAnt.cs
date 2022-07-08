@@ -19,6 +19,7 @@ public class RedAnt : MonoBehaviour
     public Vector2 enemyLocation;
     public bool wanderOnly = false;
     public GameObject isItAlive;
+    public bool isfoodGone = false;
     
     Rigidbody2D rb;
 
@@ -78,9 +79,17 @@ public class RedAnt : MonoBehaviour
     private void OnTriggerStay2D(Collider2D col)
     {
 
-
         BlackWeapon weapon = col.GetComponent<BlackWeapon>();
-
+        DestroyTime foodGone = col.GetComponent<DestroyTime>();
+        if (foodGone != null)
+        {
+            if (goTo != 0)
+            {
+                isfoodGone = true;
+                goTo = 2;
+            }
+            
+        }
         if (weapon != null)
         {
             maxHealth = maxHealth - weapon.weaponStrength;
@@ -89,7 +98,6 @@ public class RedAnt : MonoBehaviour
 
                 if (weapon.gameObject.transform.name == "Ant(Clone)")
                 {
-                    ManagerScript.Instance.RedAntCount--;
                     var blackAnt = col.gameObject.transform.parent.GetComponent<RedAnt>();
                     if (blackAnt.wanderOnly == false)
                     {
@@ -113,17 +121,17 @@ public class RedAnt : MonoBehaviour
                     {
                         blackAnt.goTo = 0;
                     }
+                    
                     blackAnt.isFighting = false;
                 }
                 else if (weapon.gameObject.transform.name == "BlackSoldier(Clone)")
                 {
-                    ManagerScript.Instance.RedSoldierCount--;
                     var blackSoldier = col.gameObject.transform.parent.GetComponent<BlackSoldier>();
                     blackSoldier.goTo = 0;
                 }
 
 
-
+                ManagerScript.Instance.RedAntCount--;
                 Destroy(this.gameObject);
 
             }
@@ -139,44 +147,59 @@ public class RedAnt : MonoBehaviour
         Aphid aphid = col.GetComponent<Aphid>();
         RedNest nest = col.GetComponent<RedNest>();
         RedAnt ant = col.GetComponent<RedAnt>();
+        DestroyTime foodGone = col.GetComponent<DestroyTime>();
         if (wanderOnly == false)
         {
-            if (ant != null)
+            if (foodGone != null)
             {
-                if (foodLocation == new Vector2(0, 0) && isFighting == false)
-                {
-                    if (ant.foodLocation != new Vector2(0, 0))
-                    {
-                        foodLocation = ant.foodLocation;
-                        goTo = 1;
-                    }
-                }
+
+                isfoodGone = true;
+                goTo = 2;
             }
-            if (aphid != null)
+
+            //if (ant != null)
+            //{
+            //    if (ant.isfoodGone == true)
+            //    {
+
+            //        isfoodGone = true;
+            //        goTo = 2;
+            //    }
+            //    else if (foodLocation == new Vector2(0, 0) && isFighting == false)
+            //    {
+            //        if (ant.foodLocation != new Vector2(0, 0))
+            //        {
+            //            foodLocation = ant.foodLocation;
+            //            goTo = 1;
+            //        }
+            //    }
+            //}
+            if (aphid != null && isCarryingFood == false)
             {
                 isCarryingFood = true;
-                rb.velocity = Vector2.zero;
-                rb.angularVelocity = 0f;
                 this.gameObject.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
+                aphid.totalFood--;
                 goTo = 2;
 
             }
 
             if (food != null && this.gameObject.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled == false)
             {
-                rb.velocity = Vector2.zero;
-                rb.angularVelocity = 0f;
                 foodLocation = food.transform.position;
-
                 goTo = 1;
             }
 
             if (nest != null)
             {
 
-                rb.velocity = Vector2.zero;
-                rb.angularVelocity = 0f;
-                if (foodLocation == new Vector2(0, 0))
+
+                if (isfoodGone)
+                {
+                    nest.RemoveFoodLocation(foodLocation);
+                    foodLocation = new Vector2(0,0);
+                    isfoodGone = false;
+                }
+                if (nestLocation == new Vector2(0, 0))
                 {
                     nestLocation = nest.transform.position;
                 }
@@ -187,7 +210,7 @@ public class RedAnt : MonoBehaviour
                 this.gameObject.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
                 if (foodLocation != new Vector2(0, 0))
                 {
-                    nest.SetFoodLocation(foodLocation);
+                    nest.AddFoodLocation(foodLocation);
                     foodLocation = nest.GetFoodLocation();
                     isCarryingFood = false;
                     goTo = 1;
@@ -212,13 +235,16 @@ public class RedAnt : MonoBehaviour
         BlackWeapon bw = col.GetComponent<BlackWeapon>();
         if(bw != null)
         returnToWhatItWasDoing();
-
-        
     }
 
     private void returnToWhatItWasDoing()
     {
-        if (foodLocation == new Vector2(0, 0))
+        if (isfoodGone == true)
+        {
+            isfoodGone = true;
+            goTo = 2;
+        }
+        else if (foodLocation == new Vector2(0, 0))
         {
             goTo = 0;
         }

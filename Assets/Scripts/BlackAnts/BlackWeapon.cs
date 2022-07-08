@@ -11,7 +11,7 @@ public class BlackWeapon : MonoBehaviour
         var theClass = this.gameObject.transform.parent.gameObject.name;
         switch (theClass)
         {
-            case "ant(Clone)":
+            case "Ant(Clone)":
                 weaponStrength = 1;
                 break;
                 
