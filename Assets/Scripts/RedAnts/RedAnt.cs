@@ -83,11 +83,15 @@ public class RedAnt : MonoBehaviour
         DestroyTime foodGone = col.GetComponent<DestroyTime>();
         if (foodGone != null)
         {
-            if (goTo != 0)
+            if (new Vector2(foodGone.transform.position.x, foodGone.transform.position.y) == foodLocation)
             {
-                isfoodGone = true;
-                goTo = 2;
+                if (goTo != 0)
+                {
+                    isfoodGone = true;
+                    goTo = 2;
+                }
             }
+            
             
         }
         if (weapon != null)
